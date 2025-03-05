@@ -1,0 +1,218 @@
+<!-- comparison_detail.html -->
+{% load static humanize %}
+
+<style>
+    :root {
+        --primary-color: #2A2D34;
+        --accent-color: #00A8E8;
+        --text-dark: #2A2D34;
+        --text-light: #F7F7F7;
+        --gradient-bg: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+    }
+    body {
+        font-family: 'Poppins', sans-serif;
+        color: var(--text-dark);
+    }
+
+    h2, h3, h4 {
+        font-weight: 700;
+        color: var(--primary-color);
+    }
+
+    .comparison-card {
+        border: none;
+        border-radius: 15px;
+        background: var(--gradient-bg);
+        box-shadow: 0 10px 30px rgba(42,45,52,0.1);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow: hidden;
+    }
+
+    .comparison-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(42,45,52,0.15);
+    }
+
+    .carousel-indicators [data-bs-target] {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: rgba(255,255,255,0.5);
+        border: 2px solid transparent;
+    }
+
+    .carousel-indicators .active {
+        background-color: var(--accent-color);
+        border-color: white;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 8%;
+        opacity: 0.9;
+    }
+
+    .specs-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.2rem;
+        padding: 1.5rem;
+        background: white;
+        border-radius: 12px;
+        margin: -2rem 1rem 0 1rem;
+        position: relative;
+        box-shadow: 0 10px 20px rgba(42,45,52,0.05);
+    }
+
+    .spec-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: var(--gradient-bg);
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .spec-item:hover {
+        background: white;
+        box-shadow: 0 5px 15px rgba(0,168,232,0.1);
+    }
+
+    .spec-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--accent-color);
+        border-radius: 8px;
+        color: white;
+        font-size: 1.2rem;
+    }
+
+    .spec-content {
+        flex: 1;
+    }
+
+    .spec-label {
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.9rem;
+        color: #6c757d;
+        margin-bottom: 0.2rem;
+    }
+
+    .spec-value {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+        color: var(--text-dark);
+        font-size: 1.1rem;
+        margin: 0;
+    }
+
+    @media (max-width: 768px) {
+        .specs-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="comparison-card">
+    <!-- Carrusel -->
+    <div id="carousel-{{ vehicle.id }}" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            {% for photo in vehicle.fotos.all %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <div class="ratio ratio-16x9">
+                    <img src="{{ photo.photo.url }}" 
+                         class="d-block w-100 object-fit-cover"
+                         alt="Photo {{ forloop.counter }}">
+                </div>
+            </div>
+            {% empty %}
+            <div class="carousel-item active">
+                <div class="ratio ratio-16x9 bg-accent">
+                    <div class="d-flex flex-column align-items-center justify-content-center text-white">
+                        <i class="bi bi-car-front fs-1"></i>
+                        <p class="mt-2 mb-0">No images available</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        {% if vehicle.fotos.count > 1 %}
+        <div class="carousel-indicators">
+            {% for photo in vehicle.fotos.all %}
+            <button type="button" 
+                    data-bs-target="#carousel-{{ vehicle.id }}" 
+                    data-bs-slide-to="{{ forloop.counter0 }}" 
+                    {% if forloop.first %}class="active"{% endif %}></button>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Especificaciones -->
+    <div class="specs-grid">
+        <div class="spec-item">
+            <div class="spec-icon">
+                <i class="bi bi-upc-scan"></i>
+            </div>
+            <div class="spec-content">
+                <div class="spec-label">Stock Number</div>
+                <div class="spec-value">#{{ vehicle.stock }}</div>
+            </div>
+        </div>
+
+        <div class="spec-item">
+            <div class="spec-icon">
+                <i class="bi bi-calendar"></i>
+            </div>
+            <div class="spec-content">
+                <div class="spec-label">Year</div>
+                <div class="spec-value">{{ vehicle.year }}</div>
+            </div>
+        </div>
+
+        <div class="spec-item">
+            <div class="spec-icon">
+                <i class="bi bi-speedometer2"></i>
+            </div>
+            <div class="spec-content">
+                <div class="spec-label">Mileage</div>
+                <div class="spec-value">{{ vehicle.mileage|floatformat:0|intcomma }} mi</div>
+            </div>
+        </div>
+
+        <div class="spec-item">
+            <div class="spec-icon">
+                <i class="bi bi-cash-coin"></i>
+            </div>
+            <div class="spec-content">
+                <div class="spec-label">Price</div>
+                <div class="spec-value">${{ vehicle.price|floatformat:2|intcomma }}</div>
+            </div>
+        </div>
+
+        <div class="spec-item">
+            <div class="spec-icon">
+                <i class="bi bi-gear"></i>
+            </div>
+            <div class="spec-content">
+                <div class="spec-label">Transmission</div>
+                <div class="spec-value">{{ vehicle.transmission }}</div>
+            </div>
+        </div>
+
+        <div class="spec-item">
+            <div class="spec-icon">
+                <i class="bi bi-car-front"></i>
+            </div>
+            <div class="spec-content">
+                <div class="spec-label">Vehicle Type</div>
+                <div class="spec-value">{{ vehicle.vehicle_type }}</div>
+            </div>
+        </div>
+    </div>
+</div>

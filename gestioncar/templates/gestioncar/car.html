@@ -1,0 +1,289 @@
+{% extends "gestioncar/template.html" %}
+{% load static %}
+{% block title %} Admin CAR {% endblock%}
+{% block content %}
+<div class="container py-4">
+    <div class="container py-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+    
+        <h2 class="text-center" style="background-color: #4384e6; color: white; padding: 10px;" >Management Cars (Add) </h2>
+        <div class="row">
+            <div class="shadow col-12  ">
+                <div class="card h-100">
+                    <div class="card-body"> <!--Agregar-->
+                        <form action="/car/" method="post"enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="date_add">Date Added</label>
+                                        <input type="date" id="txtDateAdd" name="date_add" class="form-control" value="{{ vehicle.date_add|default:''|date:'Y-m-d' }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="date_add">Stock</label>
+                                        <input type="text" id="txtStock" name="stock" class="form-control" placeholder="Stock" maxlength="7" pattern="[A-Z0-9]+" title="Please use only uppercase letters and numbers without special characters or spaces" oninput="this.value = this.value.toUpperCase(); validateInput(this)" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="year">Year</label>
+                                        <input type="text" id="txtYear" name="year" class="form-control" placeholder="Year" maxlength="4" pattern="\d{4}" title="Please enter a valid 4-digit year" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="mileage">Mileage</label>
+                                        <input type="text" id="txtMileage" name="mileage" class="form-control" placeholder="Mileage" pattern="\d+" title="Please enter a valid mileage (only numbers)" oninput="validateMileage(this)" required>                           
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group py-1">
+                                        <label for="marca">Make</label>
+                                        <select name="marca" id="txtMake" class="form-control" onchange="updateModels()">
+                                            {% for marca in marcas %}
+                                                <option value="{{ marca.id }}">{{ marca.make }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group py-1">
+                                        <label for="modelo">Model</label>
+                                        <select name="modelo" id="txtModel" class="form-control" placeholder="Model" minlength="3" maxlength="50" required>
+                                             <option value="">Select a Model</option><!-- La lista de modelos se llenará dinámicamente con JavaScript -->
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-3">
+                                    <div class="form-group py-1">
+                                        <label for="title_condition">Title Condition</label>
+                                        <select name="title_condition" id="txtTitleCondition" class="form-control">
+                                            {% for condition in title_conditions %}
+                                                <option value="{{ condition.0 }}">{{ condition.1 }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group py-1">
+                                        <label for="vehicle_type">Vehicle Type</label>
+                                        <select name="vehicle_type" id="txtVehicleType" class="form-control">
+                                            {% for type in vehicle_types %}
+                                                <option value="{{ type.0 }}">{{ type.1 }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group py-1">
+                                        <label for="transmission">Transmission</label>
+                                        <select name="transmission" id="txtTransmission" class="form-control">
+                                            {% for transmission in transmission_types %}
+                                                <option value="{{ transmission.0 }}">{{ transmission.1 }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group py-1">
+                                        <label for="price">Price</label>
+                                        <input type="text" id="txtPrice" name="price" class="form-control" placeholder="$0.00" min="0.00" max="999999.99" title="Maximum price is $999,999.99" required>
+                                    </div>
+                                </div>                              
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="details">Additional Details</label>
+                                        <textarea id="txtDetails" name="details" class="form-control" placeholder="Enter additional details about the vehicle" rows="5"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group py-1">
+                                        <label for="foto_principal">Main Photo</label>
+                                        <input type="file" name="foto_principal" class="form-control-file" accept="image/*" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group py-1">
+                                        <label for="links">Links</label>
+                                        <textarea name="links" class="form-control" placeholder="Enter URLs separated by line breaks" rows="4"></textarea>
+                                        <small id="linksHelp" class="form-text text-muted">Enter one or more URLs, one per line.</small>
+                                    </div>
+                                </div>
+                                </div>
+                                <div class="form-group py-1">
+                                    <label for="fotos">Photos</label>
+                                    <input type="file" name="fotos" class="form-control-file" accept="image/*" multiple>
+                                </div>
+                                <div class="form-group py-1">
+                                    <label for="videos">Videos</label>
+                                    <input type="file" name="videos" class="form-control-file" accept="video/*" multiple>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-success">Submit</button>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+           <div class="h-100">
+                        <h2 class="text-center" style="background-color: #4384e6; color: white; padding: 10px;">List Car</h2>
+                        <div >
+                           <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Date</th>
+                                        <th>Stock</th>
+                                        <th>Make</th>
+                                        <th>Model</th>
+                                        <th>Year</th>
+                                        <th>Mileage</th>
+                                        <th>Price</th>
+                                        <th class="text-center" colspan="2">Actions</th>                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for vehicle in vehicles %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ vehicle.date_add }}</td>
+                                            <td>{{ vehicle.stock }}</td>
+                                            <td>{{ vehicle.make.make }}</td>
+                                            <td>{{ vehicle.car_model.model_make }}</td>
+                                            <td>{{ vehicle.year }}</td>
+                                            <td>{{ vehicle.mileage }}</td>
+                                            <td>${{ vehicle.price }}</td>
+                                            <td class="text-end">
+                                                <!-- Eliminar -->
+                                                <form action="{% url 'delete_vehicle' vehicle.id %}" method="post">
+                                                    {% csrf_token %}
+                                                    <button class="btn btn-danger" onclick="return confirm('Do you really want to delete this vehicle?')">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                            <td>
+                                                <!-- Editar -->
+                                                <form action="{% url 'edit_vehicle' vehicle.id %}" method="get">
+                                                    {% csrf_token %}
+                                                    <button class="btn btn-warning">
+                                                        <i class="fa fa-edit"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+        </div>
+    </div>
+</div>
+<!--  Update Models  para Brand y Models-->
+<script>
+    function updateModels() {        
+        var selectedMakeId = document.getElementById('txtMake').value; // Obtener el valor seleccionado de la marca
+        var modelSelect = document.getElementById('txtModel'); // Obtener el campo de selección del modelo
+        modelSelect.innerHTML = ''; // Limpiar las opciones actuales
+        fetch('/get_models/' + selectedMakeId) // Obtener modelos según la marca seleccionada mediante una petición AJAX
+            .then(response => response.json())
+            .then(data => { // Agregar una opción predeterminada (por ejemplo, un mensaje de selección)
+                var defaultOption = document.createElement('option');
+                defaultOption.text = 'Select a Model';
+                modelSelect.add(defaultOption);
+                data.forEach(model => { // Agregar las nuevas opciones al campo de selección del modelo
+                    var option = document.createElement('option');
+                    option.value = model.id;
+                    option.text = model.model_make; // Cambia 'modelo' por 'model_make'
+                    modelSelect.add(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching models:', error);
+            });
+    }
+</script>
+<!-- mascara de precio -->
+<script>
+    const priceInput = document.getElementById('txtPrice');
+    priceInput.addEventListener('input', function(e) {
+        let value = this.value;
+        value = value.replace(/[^\d.]/g, ''); // Eliminar todo excepto números y punto decimal
+        let parts = value.split('.');// Separar la parte entera de la decimal
+        if (parts[0].length > 6) {// Limitar la parte entera a 6 dígitos
+            parts[0] = parts[0].slice(0, 6);
+        }
+        if (parts.length > 1) {// Limitar la parte decimal a 2 dígitos
+            parts[1] = parts[1].slice(0, 2);
+            value = parts[0] + '.' + parts[1];
+        } else {
+            value = parts[0];
+        }
+        parts = value.split('.'); // Agregar separadores de miles
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        this.value = '$' + parts.join('.');// Agregar el símbolo de dólar y actualizar valor
+    });
+
+    priceInput.addEventListener('blur', function(e) {
+        if (this.value) {
+            let number = parseFloat(this.value.replace(/[^\d.]/g, '')); 
+            number = Math.min(number, 999999.99); // Asegurar que no exceda 999999.99
+            this.value = '$' + number.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+    });
+</script>
+<script>
+    function getNumericPrice() {
+    const price = document.getElementById('txtPrice').value;
+    return parseFloat(price.replace(/[^\d.]/g, ''));
+}
+</script>
+
+<!--valida el millage hasta 9 numeros no mas -->
+<script>
+    function validateMileage(input) { // Eliminar caracteres no numéricos utilizando una expresión regular
+        input.value = input.value.replace(/\D/g, '');
+        if (input.value.length > 9) { // Limitar a 9 números
+            input.value = input.value.slice(0, 9);
+        }
+    }
+</script>    
+
+<script>
+    // Esperar 3 segundos y luego ocultar los mensajes
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            alert.classList.remove('show');
+            alert.classList.add('fade');
+            setTimeout(() => {
+                alert.style.display = 'none'; // Oculta el mensaje
+            }, 150); // Tiempo para el efecto de desvanecimiento
+        });
+    }, 3000); // 3000 milisegundos = 3 segundos
+</script>
+{% endblock%} 

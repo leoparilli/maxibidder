@@ -1,0 +1,124 @@
+{% extends "gestioncar/template.html" %}
+{% load static %}
+{% block title %} Home {% endblock%}
+{% block content %} 
+
+<div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+      <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+      <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+      <div class="carousel-item active" data-bs-interval="3000">
+        <img src="{% static 'slider/1x1400x620.jpg' %}" class="d-block w-100" alt="Imágen 1">
+        <div class="carousel-caption d-none d-md-block">
+          <h5>First slide label</h5>
+          <p>Some representative placeholder content for the first slide.</p>
+        </div>
+      </div>
+      <div class="carousel-item" data-bs-interval="3000">
+        <img src="{% static 'slider/2x1400x620.jpg' %}" class="d-block w-100" alt="Imágen 2">
+        <div class="carousel-caption d-none d-md-block">
+          <h5>Second slide label</h5>
+          <p>Some representative placeholder content for the second slide.</p>
+        </div>
+      </div>
+      <div class="carousel-item" data-bs-interval="3000">
+        <img src="{% static 'slider/3x1400x620.jpg' %}" class="d-block w-100" alt="Imágen 3">
+        <div class="carousel-caption d-none d-md-block">
+          <h5>Third slide label</h5>
+          <p>Some representative placeholder content for the third slide.</p>
+        </div>
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+
+  <!-- ================INTRO=====================-->
+  <section class="w-50 mx-auto text-center" pt-5 id="intro">
+    <h1 class="p-3 fs-2 border-top border-3">Maxibidder an Agency that covers all your needs </br><span class="text-primary">Market Digital</span></h1>
+    <p class="p-3 fs-4"><span class="text-primary">Experts.</span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Possimus numquam odio voluptates porro nisi blanditiis illo soluta inventore placeat minus nihil, consequatur qui! Laudantium veritatis optio architecto vel distinctio consequatur officia illum quibusdam similique laborum ea saepe temporibus perferendis modi voluptate repudiandae sit pariatur, at sunt nam cupiditate quidem est.</p>
+  </section>
+  <!-- ================Services Sale, Auction, international shipping=====================-->
+  <section class="container-fluid">
+    <div class="row w-75 mx-auto service-row">
+        <div class="col-lg-4 col-md-12 col-sm-12 d-flex  my-5 icono-wrap">
+          <img src="{% static 'img/buy.png'%}" alt="Buy With us" width="150"  height="100">
+          <div>
+            <h3 class="fs-5 mt-4 px-4 pb-1">Buy With us</h3>
+            <p class="px-4">Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis non pariatur ea suscipit qui, iure dolorum atque commodi, dignissimos totam aliquid quisquam impedit aperiam nulla!</p>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-12 col-sm-12 d-flex  my-5 icono-wrap">
+          <img src="{% static 'img/Auction.png'%}" alt="Auction" width="150"  height="100">
+          <div>
+            <h3 class="fs-5 mt-4 px-4 pb-1">Auction</h3>
+            <p class="px-4">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Molestiae velit totam ad, quibusdam, ipsam molestias hic repellendus odit inventore voluptatibus voluptatem odio repellat ex, et voluptas amet atque doloribus ducimus!</p>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-12 col-sm-12 d-flex  my-5 icono-wrap">
+          <img src="{% static 'img/shipping.png'%}" alt="Shipping With us" width="150"  height="100">
+          <div>
+            <h3 class="fs-5 mt-4 px-4 pb-1">Shipping With us</h3>
+            <p class="px-4">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quisquam, obcaecati maiores ullam totam laboriosam eum iure similique? Suscipit, velit doloremque!</p>
+          </div>
+        </div>
+    </div>
+  </section>
+  <!-- ================About Us or Team Work=====================-->
+  <section>
+    <div class="w-75 m-auto text-center" id="team">
+      <h1 class="mb-5 fs-2">Team Work <span class="text-primary">  Good results</span></h1>
+      <p  class="fs-4">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Non adipisci error numquam tenetur aperiam inventore quos ea eligendi, quam nostrum modi eius soluta exercitationem distinctio deleniti asperiores voluptatibus? Assumenda corporis quae blanditiis nulla eveniet excepturi perspiciatis numquam, molestiae necessitatibus? Modi eum nam id sapiente temporibus ratione possimus a asperiores eveniet!</p>
+    </div>
+    <div class="mt-5 text-center">
+      <img class="img-fluid" src="{% static 'img/TeamWork2.png'%}" alt="Team">
+    </div>
+  </section>
+    <!-- ================Form Contact=====================--> 
+
+    <div class="container  border-top border-primary " style="max-width: 500px" id="contenedor-formulario">
+      <div class="text-center mb-4" id="titulo-formulario">
+        <div><img src="{% static './img/support.png'%}" alt="" class="img-fluid ps-5"></div>
+        <h2>Contact</h2>
+        <p class="fs-5">We are here to make your projects a reality</p>
+      </div>
+
+     
+
+      <form   method="POST" data-netlify="true" action="#">     
+            <div class= "mb-3">           
+              <input type="email" class="form-control" id="email" name="email" placeholder="nombre@ejemplo.com">
+            </div>
+ 
+          
+            <div class="mb-3">            
+              <input type="input" class="form-control" id="name" name="name" placeholder="John Doe">
+            </div>
+      
+
+            <div class="mb-3">
+              <input type="tel" class="form-control" name="phone" id="phone" placeholder="Teléfono">
+            </div>
+
+          <div class="mb-3">       
+            <textarea class="form-control" name="message" id="message" rows="4"></textarea>
+          </div>
+
+          <div class="mb-3">
+            <button type="submit" class=" btn btn-primary w-100 fs-5">Send Message</button>
+          </div>
+      </form>
+  
+  </div>
+{% endblock%}

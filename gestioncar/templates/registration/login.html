@@ -1,0 +1,70 @@
+{% extends "gestioncar/template.html" %}
+{% load static %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="container py-4">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message|safe }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h3 class="mb-0">LOGIN</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endif %}
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="username" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" name="password" class="form-control" required>
+                        </div>
+                        <div class="d-grid gap-2 mb-3">
+                            <button type="submit" class="btn btn-primary">Get into</button>
+                        </div>
+                        <div class="text-center">
+                            <a href="{% url 'public_register' %}" class="btn btn-outline-success">Create new account</a>
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="{% url 'password_reset' %}" class="text-muted">You forgot your password?</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+  // Esperar 3 segundos y luego ocultar los mensajes
+  setTimeout(function() {
+      const alerts = document.querySelectorAll('.alert');
+      alerts.forEach(alert => {
+          alert.classList.remove('show');
+          alert.classList.add('fade');
+          setTimeout(() => {
+              alert.style.display = 'none'; // Oculta el mensaje
+          }, 150); // Tiempo para el efecto de desvanecimiento
+      });
+  }, 3000); // 3000 milisegundos = 3 segundos
+</script>
+{% endblock %}

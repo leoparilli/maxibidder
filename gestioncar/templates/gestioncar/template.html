@@ -1,0 +1,183 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}  {% endblock %}</title>
+    <link rel="icon" href="{% static 'img/favicon.ico' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!--tipografia goole-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+
+
+</head>
+<body>
+    <!--HEADER-->
+    <header class="container-fluid bg-dark text-white text-end py-0">
+        <div class="d-flex justify-content-end align-items-start">
+            <p>
+                <span class="small text-white">JACKSONVILLE, FLORIDA</span>
+                <span class="small text-white">  </span>
+                <span class="small bg-white text-black"> MAXI </span>
+                <span class="small text-white"> BIDDER </span>            
+            </p>
+            <!-- botones de redes sociales -->
+            <ul class="list-unstyled d-flex ms-3 my-0">
+                <li class="me-2 my-0"><a href="#" class="text-white"><i class="bi bi-facebook"></i></a></li>
+                <li class="me-2 my-0"><a href="#" class="text-white"><i class="bi bi-instagram"></i></a></li>
+                <li class="me-2 my-0"><a href="#" class="text-white"><i class="bi bi-tiktok"></i></a></li>
+                <li class="my-0"><a href="#" class="text-white"><i class="bi bi-whatsapp"></i></a></li>
+            </ul>
+        </div>
+    </header>
+       
+   
+    <!-- NAVEGATION -->
+
+    <nav class="navbar navbar-expand-md bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'Home' %}">
+                <img src="{% static 'img/VectorMaxiBidder.svg' %}" alt="Logo-Maxibidder">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav me-auto"> <!-- Agregado 'me-auto' para alinear a la izquierda -->
+                    <a class="nav-link {% if request.resolver_match.url_name == 'Home' %}active{% endif %}" href="{% url 'Home' %}">HOME</a>
+                    <a class="nav-link {% if request.resolver_match.url_name == 'Inventory' %}active{% endif %}" href="{% url 'Inventory' %}">INVENTORY</a>
+                    <a class="nav-link {% if request.resolver_match.url_name == 'Car_Finder' %}active{% endif %}" href="{% url 'Car_Finder' %}">CAR FINDER</a>
+                    <a class="nav-link {% if request.resolver_match.url_name == 'Buy_With_Us' %}active{% endif %}" href="{% url 'Buy_With_Us' %}">BUY WITH US</a>
+                    <a class="nav-link {% if request.resolver_match.url_name == 'contact_us' %}active{% endif %}" href="{% url 'contact_us' %}">CONTACT US</a>
+                    <a class="nav-link {% if request.resolver_match.url_name == 'About_Us' %}active{% endif %}" href="{% url 'About_Us' %}">ABOUT US</a>
+    
+                    <!-- Dropdown para ADMIN -->
+                   
+                    {% if user.is_authenticated %}
+                        {% if user.profile.role == 'Admin' or user.profile.role == 'Vendor' %}
+                        <div class="dropdown">
+                            <a class="nav-link dropdown-toggle {% if request.resolver_match.url_name == 'Admin_Maxibidder' %}active{% endif %}" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                ADMIN
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                                {% if user.profile.role == 'Admin' %}
+                                <li><a class="dropdown-item {% if request.resolver_match.url_name == 'Make' %}active{% endif %}" href="{% url 'Make' %}">Make</a></li>
+                                <li><a class="dropdown-item {% if request.resolver_match.url_name == 'Model' %}active{% endif %}" href="{% url 'Model' %}">Model</a></li>
+                                {% endif %}
+                                <li><a class="dropdown-item {% if request.resolver_match.url_name == 'Car' %}active{% endif %}" href="{% url 'Car' %}">Car</a></li>
+                                {% if user.profile.role == 'Admin' %}
+                                <li><a class="dropdown-item {% if request.resolver_match.url_name == 'carousel_list' %}active{% endif %}" href="{% url 'carousel_list' %}">Carousel</a></li>
+                                <li><a class="dropdown-item {% if request.resolver_match.url_name == 'vendor_list' %}active{% endif %}" href="{% url 'vendor_list' %}">Vendors</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                    {% endif %}
+                                     
+                    <div class="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        {% if user.is_authenticated %}  
+                            <span class="me-2">{{ user.username }}</span>
+                            <i class="fas fa-power-off" style="color: #e83030;"></i>
+                        {% else %}
+                            <i class="fa-solid fa-user" style="color: #000000;"></i>
+                        {% endif %}
+                        </a>
+
+                        <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                            {% if user.is_authenticated %}
+                            <!--<li><a class="dropdown-item" href="{% url 'My_Account' %}">My Account</a></li>-->
+                                <li><a class="dropdown-item" href="{% url 'edit_client' user.id %}">My Account</a></li>
+                                <li><a class="dropdown-item" href="#">Favorite</a></li>
+                                {% if user.profile.role == 'Admin' %}
+                                    <li><a class="dropdown-item" href="{% url 'client_list' %}">Manage User</a></li>
+                                {% endif %}
+                                <li><hr class="dropdown-divider"></li>                           
+                                <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                            {% else %}
+                                <li><a class="dropdown-item" href="{% url 'login' %}">Login</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                            
+
+                        <!--<a class="nav-link {% if request.resolver_match and request.resolver_match.url_name == 'My_Account' %}active{% endif %}" href="{% url 'My_Account' %}">MY ACCOUNT</a>-->
+                     
+                    
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="main-content">
+        {% block content %}
+        <!-- Contenido de la página -->
+        {% endblock %}
+    </div>
+
+    {% block footer %}  
+    <footer class="bg-black text-white mt-auto">
+        <div class="container py-4">
+            <div class="footer-links-container row">
+                <!-- Columna 1: Google Maps -->
+                <div class="col-lg-3 col-md-3 col-sm-12">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3449.339105890274!2d-81.7947531!3d30.1258259!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88e5c3f0ee4acf85%3A0xb89279d8e5b32b52!2sMaxibidder!5e0!3m2!1sen!2sus!4v1700075017998!5m2!1sen!2sus" 
+                        width="100%" 
+                        height="200" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+            
+                <!-- Columna 2: Quick Links -->
+                <div class="col-lg-3 col-md-3 col-sm-12 text-center">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="{% url 'Inventory' %}" class="text-decoration-none footer-link">INVENTORY</a></li>
+                        <li><a href="{% url 'Buy_With_Us' %}" class="text-decoration-none footer-link">BUY WITH US</a></li>
+                        <li><a href="{% url 'Car_Finder' %}" class="text-decoration-none footer-link">CAR FINDER</a></li>
+                        <li><a href="{% url 'contact_us' %}" class="text-decoration-none footer-link">CONTACT US</a></li>
+                        <li><a href="{% url 'About_Us' %}" class="text-decoration-none footer-link">ABOUT US</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Columna 3: Logo Maxibidder -->
+                <div class="col-lg-3 col-md-3 col-sm-12 text-center">
+                    <div class="footer-logo-container">
+                        <img src="{% static 'img/VectorMaxibidderCircle.svg' %}" alt="Logo Maxibidder" class="footer-logo">
+                    </div>
+                </div>
+                
+                <!-- Columna 4: Contact Us -->
+                <div class="col-lg-3 col-md-3 col-sm-12 text-center">
+                    <h5>Contact Us</h5>
+                    <p>1268 BLANDING BLVD. UNIT 1268-C ORANGE PARK,<br>FL. 32065</p>
+                    <p>Phone: +1 (904) 606-5973</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    
+        
+
+    {% endblock %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/typewriter-effect@latest/dist/core.js"></script> <!--CDN de https://github.com/tameemsafi/typewriterjs     animacion tipeado letra-->
+    <script src="{% static 'script/main.js' %}"></script> 
+</html>
+
+

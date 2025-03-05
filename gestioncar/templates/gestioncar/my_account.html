@@ -1,0 +1,22 @@
+{% extends "gestioncar/template.html" %}
+{% block title %} My Account {% endblock%}
+{% block content %} 
+<div class="container py-4">
+    <div class="card">
+        <div class="card-header">
+            <h3>My Account</h3>
+        </div>
+        <div class="card-body">
+            <p>Username: {{ user.username }}</p>
+            <p>Email: {{ user.email }}</p>
+            <a href="{% url 'edit_client' user.id %}" class="btn btn-warning">
+                Edit Profile
+            </a>
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock%}

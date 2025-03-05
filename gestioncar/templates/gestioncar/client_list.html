@@ -1,0 +1,34 @@
+{% extends "gestioncar/template.html" %}
+{% load static %}
+{% block title %}Client Management{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <h2 class="mb-4">Client List</h2>
+    {% if request.user.profile.role == 'Admin' %}
+    <a href="{% url 'register_client' %}" class="btn btn-success mb-3">Register New Client</a>
+    {% endif %}
+    
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for client in clients %}
+            <tr>
+                <td>{{ client.username }}</td>
+                <td>{{ client.email }}</td>
+                <td>
+                    <a href="{% url 'edit_client' client.id %}" class="btn btn-warning btn-sm">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

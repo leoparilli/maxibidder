@@ -1,0 +1,297 @@
+{% extends "gestioncar/template.html" %}
+{% load static %}
+{% block title %} Edit Vehicle {% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="container py-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <h2 class="text-center" style="background-color: #4384e6; color: white; padding: 10px; margin-bottom: 10px;"><i class="bi bi-person-gear me-2"></i>Edit Vehicle</h2>
+        <div class="row">
+            <div class="shadow col-12">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <form action="{% url 'edit_vehicle' vehicle.id %}" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="date_add">Date Added</label>
+                                        <p style="background-color: #fff9c4; padding: 5px; border-radius: 5px; user-select: none; pointer-events: none;">previus: {{ vehicle.date_add }}</p>
+                                        <input type="date" id="txtDateAdd" name="date_add" class="form-control" value="{{ vehicle.date_add|date:'Y-m-d' }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">                                        
+                                        <label for="stock" style="user-select: none; pointer-events: none;">Stock</label>
+                                        <p style="background-color: #fff9c4; padding: 5px; border-radius: 5px; user-select: none; pointer-events: none;">previus: {{ vehicle.stock }}</p>
+                                        <input type="text" id="txtStock" name="stock" class="form-control" value="{{ vehicle.stock }}" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div style="user-select: none; pointer-events: none;"class="form-group">
+                                        <label for="year">Year</label>
+                                        <p style="background-color: #fff9c4; padding: 5px; border-radius: 5px; user-select: none; pointer-events: none;">previus: {{ vehicle.year }}</p>
+                                        <input type="text" id="txtYear" name="year" class="form-control" value="{{ vehicle.year }}" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label style="user-select: none; pointer-events: none;" for="mileage">Mileage</label>
+                                        <p style="background-color: #fff9c4; padding: 5px; border-radius: 5px; user-select: none; pointer-events: none;">previus: {{ vehicle.mileage }}</p>
+                                        <input type="text" id="txtMileage" name="mileage" class="form-control" value="{{ vehicle.mileage }}" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group py-1">
+                                        <label for="marca" style="user-select: none; pointer-events: none;">Make</label>
+                                        <p style="background-color: #fff9c4; padding: 5px; border-radius: 5px; user-select: none; pointer-events: none;">previus: {{ vehicle.make }}</p>
+                                        <select name="marca" id="txtMake" class="form-control" onchange="updateModels()">
+                                            {% for marca in marcas %}
+                                                <option value="{{ marca.id }}" {% if marca.id == vehicle.make.id %}selected{% endif %}>{{ marca.make }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group py-1">
+                                        <label for="modelo" style="user-select: none; pointer-events: none;">Model</label>
+                                        <p style="background-color: #fff9c4; padding: 5px; border-radius: 5px; user-select: none; pointer-events: none;">previus: {{ vehicle.car_model }}</p>
+                                        <select name="modelo" id="txtModel" class="form-control" required>
+                                            <option value="">Select a Model</option> <!-- Se llenará dinámicamente -->
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group py-1">
+                                        <label for="title_condition" style="user-select: none; pointer-events: none;">Title Condition</label>
+                                        <p style="background-color: #fff9c4; padding: 5px; border-radius: 5px; user-select: none; pointer-events: none;">previus: {{ vehicle.title_condition }}</p>
+                                        <select name="title_condition" id="txtTitleCondition" class="form-control">
+                                            {% for condition in title_conditions %}
+                                                <option value="{{ condition.0 }}" {% if condition.0 == vehicle.title_condition %}selected{% endif %}>{{ condition.1 }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group py-1">
+                                        <label for="vehicle_type" style="user-select: none; pointer-events: none;">Vehicle Type</label>
+                                        <p style="background-color: #fff9c4; padding: 5px; border-radius: 5px; user-select: none; pointer-events: none;">previus: {{ vehicle.vehicle_type }}</p>
+                                        <select name="vehicle_type" id="txtVehicleType" class="form-control">
+                                            {% for type in vehicle_types %}
+                                                <option value="{{ type.0 }}" {% if type.0 == vehicle.vehicle_type %}selected{% endif %}>{{ type.1 }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group py-1">
+                                        <label for="transmission" style="user-select: none; pointer-events: none;">Transmission</label>
+                                        <p style="background-color: #fff9c4; padding: 5px; border-radius: 5px; user-select: none; pointer-events: none;">previus: {{ vehicle.transmission }}</p>
+                                        <select name="transmission" id="txtTransmission" class="form-control">
+                                            {% for transmission in transmission_types %}
+                                                <option value="{{ transmission.0 }}" {% if transmission.0 == vehicle.transmission %}selected{% endif %}>{{ transmission.1 }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group py-1">
+                                        <label for="price" style="user-select: none; pointer-events: none;">Price</label>
+                                        <p style="background-color: #fff9c4; padding: 5px; border-radius: 5px; user-select: none; pointer-events: none;">previus: ${{ vehicle.price }}</p>
+                                        <input type="text" id="txtPrice" name="price" class="form-control" value="${{ vehicle.price|floatformat:2 }}" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">     
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="details" style="user-select: none; pointer-events: none;">Additional Details</label>
+                                                <textarea id="txtDetails" name="details" class="form-control" rows="5" style="background-color: #fff9c4">{{ vehicle.details }}</textarea>
+                                            </div>
+                                        </div>
+                                    
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="links" style="user-select: none; pointer-events: none;">Links</label>
+                                                <textarea name="links" class="form-control" rows="5" style="background-color: #fff9c4">{{ vehicle.links }}</textarea>
+                                            </div>
+                                        </div>
+                            </div>
+                            <hr>
+                            <h5 class="text-center" style="background-color: #5a5c5f; color: white; padding: 10px; margin-top: 10px;">Change (replace) or delete photos and videos</h5>
+                            <!-- Foto principal -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group py-1">
+                                        <label for="foto_principal">The Main Photo can only be replaced.</label>
+                                        <input type="file" name="foto_principal" class="form-control-file" accept="image/*" id="foto_principal_input" style="display: none;">
+                                        {% if vehicle.foto_principal %}
+                                            <div class="mt-2 position-relative d-inline-block">
+                                                <img src="{{ vehicle.foto_principal.url }}" alt="Main Photo" class="img-thumbnail" style="max-width: 200px;">
+                                                <div class="position-absolute top-0 end-0 p-1">
+                                                    <!--<button type="button" class="btn btn-danger btn-sm" onclick="deleteMainPhoto()"> la foto principal no se debe eliminar sino reemplazar
+                                                        <i class="fa-solid fa-circle-xmark"></i>
+                                                    </button>-->
+                                                    <button type="button" class="btn btn-warning btn-sm" onclick="changeMainPhoto()" title="Replace this photo">
+                                                        <i class="fa-solid fa-square-pen"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <input type="hidden" name="delete_foto_principal" id="delete_foto_principal" value="0"> 
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <!-- Fotos adicionales -->
+                            <div class="form-group py-1">
+                                <label for="fotos">Add New Photos</label>
+                                <input type="file" name="fotos" class="form-control-file" accept="image/*" multiple>
+                                {% if vehicle.fotos.all %}
+                                    <div class="mt-2">
+                                        {% for photo in vehicle.fotos.all %}
+                                            <div class="d-inline-block me-2 position-relative">
+                                                <img src="{{ photo.photo.url }}" alt="Photo" class="img-thumbnail" style="max-width: 200px;">
+                                                <div class="position-absolute top-0 end-0 p-1">
+                                                    <button type="button" class="btn btn-danger btn-sm" onclick="deletePhoto('{{ photo.id }}')" title="Delete this photo">
+                                                        <i class="fa-solid fa-circle-xmark"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-warning btn-sm" onclick="changePhoto('{{ photo.id }}') " title="Replace this photo">
+                                                        <i class="fa-solid fa-square-pen"></i>
+                                                    </button>
+                                                </div>
+                                                <input type="hidden" name="delete_photos" id="delete_photo_{{ photo.id }}" value="">
+                                                <input type="file" name="change_photo_{{ photo.id }}" id="change_photo_{{ photo.id }}" style="display: none;" accept="image/*">
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Videos -->
+                            <hr>
+                            <div class="form-group py-1">
+                                <label for="videos">Add New Videos</label>
+                                <input type="file" name="videos" class="form-control-file" accept="video/*" multiple>
+                                {% if vehicle.videos.all %}
+                                    <div class="mt-2">
+                                        {% for video in vehicle.videos.all %}
+                                            <div class="d-inline-block me-2 position-relative">
+                                                <video controls class="img-thumbnail" style="max-width: 200px;">
+                                                    <source src="{{ video.video_file.url }}" type="video/mp4">
+                                                    Your browser does not support the video tag.
+                                                </video>
+                                                <div class="position-absolute top-0 end-0 p-1">
+                                                    <button type="button" class="btn btn-danger btn-sm" onclick="deleteVideo('{{ video.id }}')" title="Delete this video">
+                                                        <i class="fa-solid fa-circle-xmark"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-warning btn-sm" onclick="changeVideo('{{ video.id }}')" title="Replace this video">
+                                                        <i class="fa-solid fa-square-pen"></i>
+                                                    </button>
+                                                </div>
+                                                <input type="hidden" name="delete_videos" id="delete_video_{{ video.id }}" value="">
+                                                <input type="file" name="change_video_{{ video.id }}" id="change_video_{{ video.id }}" style="display: none;" accept="video/*">
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>                          
+
+
+                            <button type="submit" class="btn btn-success w-100" title="Update Car">Update</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Función para cargar modelos según la marca seleccionada
+    function updateModels() {
+        var selectedMakeId = document.getElementById('txtMake').value;
+        var modelSelect = document.getElementById('txtModel');
+        
+        // Limpiar opciones actuales
+        modelSelect.innerHTML = '<option value="">Select a Model</option>';
+        
+        // Obtener modelos vía AJAX
+        fetch(`/get_models/${selectedMakeId}/`)
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(model => {
+                    var option = document.createElement('option');
+                    option.value = model.id;
+                    option.text = model.model_make;
+                    // Marcar como seleccionado el modelo actual del vehículo
+                    if (model.id === {{ vehicle.car_model.id }}) {
+                        option.selected = true;
+                    }
+                    modelSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error al cargar modelos:', error);
+            });
+    }
+
+    // Ejecutar al cargar la página y cuando cambia la marca
+    document.addEventListener('DOMContentLoaded', updateModels);
+    document.getElementById('txtMake').addEventListener('change', updateModels);
+</script>
+
+<!-- Script para actualizar modelos dinámicamente -->
+<script>
+    // Eliminar foto principal
+    function deleteMainPhoto() {
+        document.getElementById('delete_foto_principal').value = '1';
+        alert('Main photo will be deleted on update.');
+    }
+
+    // Cambiar foto principal
+    function changeMainPhoto() {
+        document.getElementById('foto_principal_input').click();
+    }
+
+    // Eliminar foto adicional
+    function deletePhoto(photoId) {
+        //document.getElementById('delete_photo_' + photoId).value = '1';
+        document.getElementById('delete_photo_' + photoId).value = photoId; // Envía el ID
+        alert('Photo will be deleted on update.');
+    }
+
+    // Cambiar foto adicional
+    function changePhoto(photoId) {
+        document.getElementById('change_photo_' + photoId).click();
+    }
+
+    // Eliminar video
+    function deleteVideo(videoId) {
+        document.getElementById('delete_video_' + videoId).value = videoId; // Envía el ID
+        //document.getElementById('delete_video_' + videoId).value = '1';
+        alert('Video will be deleted on update.');
+    }
+
+    // Cambiar video
+    function changeVideo(videoId) {
+        document.getElementById('change_video_' + videoId).click();
+    }
+</script>
+{% endblock %}

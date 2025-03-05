@@ -1,0 +1,147 @@
+{% extends "gestioncar/template.html" %}
+{% block title %} Compare Vehicles {% endblock %}
+{% block content %}
+{% load static humanize %}
+
+<style>
+    /* Estilo general */
+    .compare-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        margin-top: 20px;
+    }
+    .vehicle-thumbnail {
+        width: 100px;
+        height: 75px;
+        object-fit: cover;
+        margin: 5px;
+        cursor: pointer;
+        border: 2px solid transparent;
+    }
+    .vehicle-thumbnail:hover {
+        border-color: #007bff;
+    }
+    .selected-thumbnail {
+        border-color: #007bff;
+    }
+</style>
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4" 
+        style="font-size: 2rem; font-weight: bold; color: #fff; background-color: #b0b2b1; padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+        <span style="text-align: center; flex-grow: 1;"><i class="fas fa-car-side me-2"></i> Vehicle Comparison</span>
+        <a href="#" onclick="goBack()" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Go Back
+        </a>
+    </h2>
+    
+</h2>
+    <div class="compare-container">
+        <!-- Filtros -->
+        <div>
+            <h4>Find Another Vehicle to Compare</h4>
+            <form class="row g-3 mb-3">
+                <div class="col-md-3">
+                    <select name="make" class="form-select">
+                        <option value="">All Makes</option>
+                        {% for make in makes %}
+                        <option value="{{ make.make }}" {% if make.make == make_filter %}selected{% endif %}>
+                            {{ make.make }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="model" class="form-select">
+                        <option value="">All Models</option>
+                        {% for model in models %}
+                        <option value="{{ model }}" {% if model == model_filter %}selected{% endif %}>
+                            {{ model }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="year" class="form-select">
+                        <option value="">All Years</option>
+                        {% for year in years %}
+                        <option value="{{ year }}" {% if year == year_filter %}selected{% endif %}>
+                            {{ year }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100" 
+                        style="background-color: #0d6efd; border: none; border-radius: 25px; padding: 10px; font-size: 1rem; font-weight: bold; transition: all 0.3s ease;">
+                        <i class="fas fa-filter me-2"></i> Filter
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Miniaturas de Vehículos -->
+        <div>
+            <h4>Vehicles Available for Comparison</h4>
+            <div class="vehicle-thumbnails d-flex flex-wrap">
+                {% for vehicle in comparable_vehicles %}
+                <img src="{{ vehicle.foto_principal.url }}" alt="{{ vehicle.stock }}" class="vehicle-thumbnail"
+                     onclick="selectVehicle(this)" data-id="{{ vehicle.id }}">
+                {% empty %}
+                <p>No vehicles found.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Comparación de Vehículos -->
+        {% if compare_with_vehicle %}
+        <h4 class="text-center mb-4" style="font-size: 1.5rem; font-weight: bold; color: #fff; background-color: #0d6efd; padding: 15px; border-radius: 8px;"><i class="fas fa-balance-scale me-2"></i> Comparison Result </h4>
+    
+        <div class="row">
+                <!-- Vehículo Seleccionado -->
+                <div class="col-md-6">
+                    <h5 class="text-primary mb-3" style="font-size: 1.2rem; font-weight: 600;">
+                        Selected Vehicle
+                    </h5>
+                    <div style="margin-bottom: 20px;">
+                        {% include 'gestioncar/partials/comparison_detail.html' with vehicle=selected_vehicle %}
+                    </div>
+                </div>
+        
+                <!-- Vehículo para Comparar -->
+                <div class="col-md-6">
+                    <h5 class="text-primary mb-3" style="font-size: 1.2rem; font-weight: 600;">
+                        Compared Vehicle
+                    </h5>
+                    <div style="margin-bottom: 20px;">
+                        {% include 'gestioncar/partials/comparison_detail.html' with vehicle=compare_with_vehicle %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    // Función para seleccionar un vehículo
+    function selectVehicle(thumbnail) {
+        const vehicleId = thumbnail.getAttribute('data-id');
+        const selectedVehicleId = '{{ selected_vehicle.id }}';
+        window.location.href = `{% url 'compare' %}?selected_vehicle=${selectedVehicleId}&compare_with=${vehicleId}`;
+    }
+
+    // Resaltar la miniatura seleccionada
+    document.querySelectorAll('.vehicle-thumbnail').forEach(thumbnail => {
+        if (thumbnail.getAttribute('data-id') == '{{ compare_with_vehicle.id|default_if_none:"" }}') {
+            thumbnail.classList.add('selected-thumbnail');
+        }
+    });
+</script>
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
+{% endblock %}

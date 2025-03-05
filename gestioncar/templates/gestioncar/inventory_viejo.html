@@ -1,0 +1,75 @@
+{% extends "gestioncar/template.html" %}
+{% block title %} Inventory {% endblock%}
+{% block content %}  
+
+{% load static humanize %}
+<div class="container mt-4">
+    <!-- Filtros -->
+    <form class="row g-3 mb-4">
+        <div class="col-md-3">
+            <input type="text" name="search" class="form-control" placeholder="Search by stock..." value="{{ search_query }}">
+        </div>
+        <div class="col-md-2">
+            <select name="make" class="form-select">
+                <option value="">All Makes</option>
+                {% for make in makes %}
+                <option value="{{ make.make }}" {% if make.make == selected_make %}selected{% endif %}>
+                    {{ make.make }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="year" class="form-select">
+                <option value="">All Years</option>
+                {% for year in years %}
+                <option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>{{ year }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <input type="number" name="price_min" class="form-control" placeholder="Min Price" value="{{ price_min }}">
+        </div>
+        <div class="col-md-2">
+            <input type="number" name="price_max" class="form-control" placeholder="Max Price" value="{{ price_max }}">
+        </div>
+        <div class="col-md-1">
+            <button type="submit" class="btn btn-primary w-100">Filter</button>
+        </div>
+    </form>
+
+    <!-- Grid de Vehículos -->
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for vehicle in vehicles %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                {% if vehicle.foto_principal %}
+                <img src="{{ vehicle.foto_principal.url }}" class="card-img-top img-fluid" alt="{{ vehicle.stock }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                <div class="bg-secondary text-center text-white p-5">No Image Available</div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ vehicle.make.make }} {{ vehicle.car_model.model_make }}</h5>
+                    <ul class="list-unstyled">
+                        <li><strong>Stock:</strong> {{ vehicle.stock }}</li>
+                        <li><strong>Year:</strong> {{ vehicle.year }}</li>
+                        <li><strong>Mileage:</strong> {{ vehicle.mileage|floatformat:0 }} miles</li>
+                        <li><strong>Price:</strong> ${{ vehicle.price|floatformat:2 }}</li>
+                    </ul>
+                </div>
+                <div class="card-footer bg-white">
+                    <a href="{% url 'car_detail' vehicle.id %}" class="btn btn-outline-primary btn-sm">
+                        View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-warning">No vehicles found matching your criteria.</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock%}

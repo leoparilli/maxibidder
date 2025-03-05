@@ -1,0 +1,81 @@
+{% extends "gestioncar/template.html" %}
+{% load static %}
+{% block title %}Admin Carousel{% endblock %}
+{% block content %}
+<div class="container py-4">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+    <h2 class="text-center " style="background-color: #4384e6; color: white; padding: 10px;">Admin Carousel</h2>
+    <a href="{% url 'register_carousel' %}" class="btn btn-primary mb-3 " style="margin-top: 10px">Add New Slide</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Image</th>
+                <!--<th>S-T</th>
+                <th>S-D</th>-->
+                <th>Show</th>
+                <th>Order</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for carousel in carousels %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ carousel.title }}</td>
+                <td>{{ carousel.description }}</td>
+                <td><img src="{{ carousel.image.url }}" alt="{{ carousel.title }}" width="80"></td>
+                <td>
+                    <strong title="Title">T</strong> {% if carousel.show_title %}Yes{% else %}No{% endif %}
+                    <strong title="Description">D</strong> {% if carousel.show_description %}Yes{% else %}No{% endif %}
+                    <strong title="Slider">S</strong> {% if carousel.show_slider %}Yes{% else %}No{% endif %}
+                </td>
+                <td>{{ carousel.order }}</td>
+                <td>
+                    <!-- Editar -->
+                    <form action="{% url 'edit_carousel' carousel.id %}" method="get" style="display: inline;">
+                        <button type="submit" class="btn btn-warning btn-sm">
+                            <i class="fa fa-edit"></i>
+                        </button>
+                    </form>
+                
+                    <!-- Eliminar -->
+                    <form action="{% url 'delete_carousel' carousel.id %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm"
+                                onclick="return confirm('Are you sure to delete this slide?')">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+<script>
+    // Esperar 3 segundos y luego ocultar los mensajes
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            alert.classList.remove('show');
+            alert.classList.add('fade');
+            setTimeout(() => {
+                alert.style.display = 'none'; // Oculta el mensaje
+            }, 150); // Tiempo para el efecto de desvanecimiento
+        });
+    }, 3000); // 3000 milisegundos = 3 segundos
+</script>
+
+{% endblock %}

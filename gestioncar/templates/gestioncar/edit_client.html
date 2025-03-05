@@ -1,0 +1,148 @@
+{% extends "gestioncar/template.html" %}
+{% load static %}
+{% block title %}Edit Client{% endblock %}
+{% block content %}
+<div class="container py-4">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0"><i class="bi bi-person-gear me-2"></i>Edit Profile</h3>
+        </div>
+        
+        <div class="card-body">
+            <!-- Formulario Datos Generales -->
+            <form method="post">
+                {% csrf_token %}
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control" 
+                               value="{{ client.email }}" required readonly 
+                               style="background-color: #f0f0f0; cursor: not-allowed;">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Phone</label>
+                        <input type="tel" name="phone" class="form-control" 
+                               value="{{ profile.phone }}">
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <label class="form-label">First Name</label>
+                        <input type="text" name="first_name" class="form-control" 
+                               value="{{ client.first_name }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" name="last_name" class="form-control" 
+                               value="{{ client.last_name }}">
+                    </div>
+                    
+                </div>
+
+                <!-- Preferencias -->
+                <div class="mb-4">
+                    <h5 class="mb-3"><i class="bi bi-megaphone me-2"></i>Communication Preferences</h5>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" 
+                               name="receive_newsletter" id="newsletter" {% if profile.receive_newsletter %}checked{% endif %}>
+                        <label class="form-check-label" for="newsletter">Receive newsletter</label>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" 
+                               name="receive_notifications" id="notifications" {% if profile.receive_notifications %}checked{% endif %}>
+                        <label class="form-check-label" for="notifications">Receive notifications</label>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" 
+                               name="receive_catalog" id="catalog" {% if profile.receive_catalog %}checked{% endif %}>
+                        <label class="form-check-label" for="catalog">Receive monthly catalog</label>
+                    </div>
+                </div>
+
+                <button type="submit" name="update_profile" class="btn btn-primary">
+                    <i class="bi bi-save me-2"></i>Save Changes
+                </button>
+            </form>
+
+            <hr class="my-5">
+
+            <!-- Cambio de Contraseña -->
+            <div class="accordion" id="passwordAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" 
+                                data-bs-toggle="collapse" data-bs-target="#passwordCollapse">
+                            <i class="bi bi-shield-lock me-2"></i>Change Password
+                        </button>
+                    </h2>
+                    <div id="passwordCollapse" class="accordion-collapse collapse" 
+                         data-bs-parent="#passwordAccordion">
+                        <div class="accordion-body">
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label class="form-label">Current Password</label>
+                                    <input type="password" name="current_password" 
+                                           class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">New Password</label>
+                                    <input type="password" name="new_password1" 
+                                           class="form-control" required>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Confirm New Password</label>
+                                    <input type="password" name="new_password2" 
+                                           class="form-control" required>
+                                </div>
+                                <button type="submit" name="change_password" 
+                                        class="btn btn-warning">
+                                    <i class="bi bi-key me-2"></i>Change Password
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // Esperar 3 segundos y luego ocultar los mensajes
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            alert.classList.remove('show');
+            alert.classList.add('fade');
+            setTimeout(() => {
+                alert.style.display = 'none'; // Oculta el mensaje
+            }, 150); // Tiempo para el efecto de desvanecimiento
+        });
+    }, 3000); // 3000 milisegundos = 3 segundos
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Validación de coincidencia de contraseñas
+        const new1 = document.querySelector('input[name="new_password1"]');
+        const new2 = document.querySelector('input[name="new_password2"]');
+        
+        function validatePasswords() {
+            if(new1.value !== new2.value) {
+                new2.setCustomValidity('Las contraseñas deben coincidir');
+            } else {
+                new2.setCustomValidity('');
+            }
+        }
+        
+        new1.addEventListener('input', validatePasswords);
+        new2.addEventListener('input', validatePasswords);
+    });
+</script>
+{% endblock %}

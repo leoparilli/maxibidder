@@ -1,0 +1,69 @@
+{% extends "gestioncar/template.html" %}
+{% load static %}
+{% block title %}Editar Slide{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="container py-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        <h2 class="text-center" style="background-color: #4384e6; color: white; padding: 10px; margin-bottom: 10px;"><i class="bi bi-person-gear me-2"></i>Edit Slide</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" class="form-control" id="title" name="title" value="{{ carousel.title }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" id="description" name="description">{{ carousel.description }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="image" class="form-label">Current Image</label>
+                <img src="{{ carousel.image.url }}" alt="{{ carousel.title }}" width="200" class="d-block mb-2">
+                <input type="file" class="form-control" id="image" name="image" accept="image/*">
+            </div>
+            <div class="mb-3">
+                <label for="link" class="form-label">Link</label>
+                <input type="url" class="form-control" id="link" name="link" value="{{ carousel.link }}" placeholder="https://example.com">
+            </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="show_title" name="show_title" {% if carousel.show_title %}checked{% endif %}>
+                <label class="form-check-label" for="show_title">Show Title</label>
+            </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="show_description" name="show_description" {% if carousel.show_description %}checked{% endif %}>
+                <label class="form-check-label" for="show_description">Show Description</label>
+            </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="show_slider" name="show_slider" {% if carousel.show_slider %}checked{% endif %}>
+                <label class="form-check-label" for="show_slider">Show Slider</label>
+            </div>
+            <div class="mb-3">
+                <label for="order" class="form-label">Order</label>
+                <input type="number" class="form-control" id="order" name="order" value="{{ carousel.order }}">
+            </div>
+            <button type="submit" class="btn btn-success">Update</button>
+        </form>
+    </div>
+</div>
+<script>
+    // Esperar 3 segundos y luego ocultar los mensajes
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            alert.classList.remove('show');
+            alert.classList.add('fade');
+            setTimeout(() => {
+                alert.style.display = 'none'; // Oculta el mensaje
+            }, 150); // Tiempo para el efecto de desvanecimiento
+        });
+    }, 3000); // 3000 milisegundos = 3 segundos
+</script>
+{% endblock %}
